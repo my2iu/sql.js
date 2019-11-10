@@ -545,8 +545,8 @@ Database = (function() {
   @return [Array<QueryResults>] An array of results.
    */
 
-  Database.prototype['exec'] = function(sql) {
-    var curresult, nextSqlPtr, pStmt, pzTail, results, stack, stmt;
+  Database.prototype['exec'] = function(sql, results, limitErr, limitTime) {
+    var curresult, nextSqlPtr, pStmt, pzTail, results, stack, stmt, count = 0, startTime = Date.now();
     if (!this.db) {
       throw "Database closed";
     }
@@ -554,7 +554,6 @@ Database = (function() {
     try {
       nextSqlPtr = allocateUTF8OnStack(sql);
       pzTail = stackAlloc(4);
-      results = [];
       while (getValue(nextSqlPtr, 'i8') !== NULL) {
         setValue(apiTemp, 0, 'i32');
         setValue(pzTail, 0, 'i32');
@@ -576,12 +575,14 @@ Database = (function() {
               results.push(curresult);
             }
             curresult['values'].push(stmt['get']());
+            count++;
+            if (count > limitErr) throw 'Too many results';
+            if (Date.now() - startTime > limitTime) throw 'Query took too long';
           }
         } finally {
           stmt['free']();
         }
       }
-      return results;
     } finally {
       stackRestore(stack);
     }
@@ -7800,13 +7801,14 @@ if (typeof importScripts === 'function') {
           if (!data['sql']) {
             throw 'exec: Missing query string';
           }
-          var result = null;
+          var result = [];
           try {
-             result = db.exec(data['sql'])
+             db.exec(data['sql'], result, 10000, 3000);
           } catch (e) {
              return postMessage({
                'id': data['id'],
-               'error': "" + e
+               'error': "" + e,
+               'results': result
              });
           }
           return postMessage({
