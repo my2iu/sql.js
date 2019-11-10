@@ -1,14 +1,14 @@
 html {
-	background:#222;
+	background:#ddd;
 	margin:auto;
-	width:80%;
 }
 
 body{
-	background: linear-gradient(#aaa 0, #ddd 10px, #fff 55px);
-	border: 1px solid black;
+	background: white;
+/*	background: linear-gradient(#aaa 0, #ddd 10px, #fff 55px);*/
+/*	border: 1px solid black;*/
 	padding: 10px 20px;
-	box-shadow: 5px 0px 30px #000;
+/*	box-shadow: 5px 0px 30px #000;*/
 	border-radius: 8px;
 }
 
@@ -51,6 +51,10 @@ h1 {
 .CodeMirror-scroll {
   overflow-y: hidden;
   overflow-x: auto;
+}
+
+.execerror {
+  color: red;
 }
 
 .error {
