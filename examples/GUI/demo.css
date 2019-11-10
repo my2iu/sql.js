@@ -53,14 +53,13 @@ h1 {
   overflow-x: auto;
 }
 
-.execerror {
-  color: red;
+.status {
+	transition: height .5s;
+	overflow:hidden;
 }
 
 .error {
 	color:red;
-	transition:.5s;
-	overflow:hidden;
 }
 
 #output {
