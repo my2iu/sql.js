@@ -16,10 +16,23 @@ worker.postMessage({ action: 'open' });
 function print(text) {
 	outputElm.innerHTML = text.replace(/\n/g, '<br>');
 }
-function error(e) {
-	console.log(e);
+
+function status(msg) {
+	console.log(msg);
+	errorElm.classList.remove('error');
 	errorElm.style.height = '2em';
-	errorElm.textContent = e.message;
+	errorElm.textContent = msg;
+}
+
+function statuserr(msg) {
+	console.log(msg);
+	errorElm.classList.add('error');
+	errorElm.style.height = '2em';
+	errorElm.textContent = msg;
+}
+
+function error(e) {
+	statuserr(e.message);
 }
 
 function noerror() {
@@ -33,23 +46,22 @@ function execute(commands) {
                 var err = event.data.error;
                 if (!!err) {
 		   toc("Executing SQL");
-    		   outputElm.textContent = err;
-		   outputElm.classList.add("execerror");
- 		   return;
-                }
+	 	   statuserr(err);
+                } else {
+		   noerror('');
+		}
 		var results = event.data.results;
+		if (!!results) {
+			outputElm.innerHTML = "";
+			for (var i = 0; i < results.length; i++) {
+				outputElm.appendChild(tableCreate(results[i].columns, results[i].values));
+			}
+		}
 		toc("Executing SQL");
 
-		tic();
-		outputElm.innerHTML = "";
-		for (var i = 0; i < results.length; i++) {
-			outputElm.appendChild(tableCreate(results[i].columns, results[i].values));
-		}
-		toc("Displaying results");
 	}
 	worker.postMessage({ action: 'exec', sql: commands });
-        outputElm.classList.remove("execerror");
-	outputElm.textContent = "Fetching results...";
+	status("Fetching results...");
 }
 
 // Create an HTML table
@@ -143,3 +155,24 @@ function savedb() {
 	worker.postMessage({ action: 'export' });
 }
 savedbElm.addEventListener("click", savedb, true);
+
+
+document.getElementById('loadWorld').onclick = function() {
+	fetch('world.db')
+		.then((response) => response.arrayBuffer())
+		.then((arrbuff) => {
+			worker.onmessage = function () {
+				toc("Loading database from file");
+				// Show the schema of the loaded database
+				editor.setValue("SELECT `name`, `sql`\n  FROM `sqlite_master`\n  WHERE type='table';");
+				execEditorContents();
+			};
+			tic();
+			try {
+				worker.postMessage({ action: 'open', buffer: arrbuff }, [arrbuff]);
+			}
+			catch (exception) {
+				worker.postMessage({ action: 'open', buffer: arrbuff });
+			}
+	});
+}
