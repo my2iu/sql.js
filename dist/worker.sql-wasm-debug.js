@@ -7800,9 +7800,18 @@ if (typeof importScripts === 'function') {
           if (!data['sql']) {
             throw 'exec: Missing query string';
           }
+          var result = null;
+          try {
+             result = db.exec(data['sql'])
+          } catch (e) {
+             return postMessage({
+               'id': data['id'],
+               'error': "" + e
+             });
+          }
           return postMessage({
             'id': data['id'],
-            'results': db.exec(data['sql'])
+            'results': result
           });
         case 'each':
           if (db === null) {
