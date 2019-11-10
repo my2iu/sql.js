@@ -6,7 +6,7 @@ var dbFileElm = document.getElementById('dbfile');
 var savedbElm = document.getElementById('savedb');
 
 // Start the worker in which sql.js will run
-var worker = new Worker("../../dist/worker.sql-wasm.js");
+var worker = new Worker("dist/worker.sql-wasm-debug.js");
 worker.onerror = error;
 
 // Open a database
@@ -30,6 +30,13 @@ function noerror() {
 function execute(commands) {
 	tic();
 	worker.onmessage = function (event) {
+                var err = event.data.error;
+                if (!!err) {
+		   toc("Executing SQL");
+    		   outputElm.textContent = err;
+		   outputElm.classList.add("execerror");
+ 		   return;
+                }
 		var results = event.data.results;
 		toc("Executing SQL");
 
@@ -41,6 +48,7 @@ function execute(commands) {
 		toc("Displaying results");
 	}
 	worker.postMessage({ action: 'exec', sql: commands });
+        outputElm.classList.remove("execerror");
 	outputElm.textContent = "Fetching results...";
 }
 
