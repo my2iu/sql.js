@@ -1,4 +1,5 @@
 var execBtn = document.getElementById("execute");
+var clearBtn = document.getElementById("clear");
 var outputElm = document.getElementById('output');
 var errorElm = document.getElementById('error');
 var commandsElm = document.getElementById('commands');
@@ -88,6 +89,8 @@ function execEditorContents() {
 }
 execBtn.addEventListener("click", execEditorContents, true);
 
+clearBtn.addEventListener("click", function() { editor.setValue('');});
+
 // Performance measurement functions
 var tictime;
 if (!window.performance || !performance.now) { window.performance = { now: Date.now } }
@@ -156,9 +159,9 @@ function savedb() {
 }
 savedbElm.addEventListener("click", savedb, true);
 
-
-document.getElementById('loadWorld').onclick = function() {
-	fetch('world.db')
+function fetchdb(file)
+{
+	fetch(file)
 		.then((response) => response.arrayBuffer())
 		.then((arrbuff) => {
 			worker.onmessage = function () {
@@ -175,4 +178,12 @@ document.getElementById('loadWorld').onclick = function() {
 				worker.postMessage({ action: 'open', buffer: arrbuff });
 			}
 	});
+}
+
+document.getElementById('loadWorld').onclick = function() {
+	fetchdb('world.db');
+}
+
+document.getElementById('loadImdb').onclick = function() {
+	fetchdb('imdb_popular_movies_2018.db');
 }
