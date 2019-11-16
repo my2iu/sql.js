@@ -14,7 +14,6 @@
 
   <h1>Online SQL interpreter</h1>
 
-  <main>
     <label for="commands">Enter some SQL</label>
     <br>
 
@@ -42,15 +41,20 @@ CREATE TABLE employees( id          integer,  name    text,
 SELECT designation,COUNT(*) AS nbr, (AVG(salary)) AS avg_salary FROM employees GROUP BY designation ORDER BY avg_salary DESC;
 SELECT name,hired_on FROM employees ORDER BY hired_on;</textarea>
 
+<div style="margin-bottom: 1em;">
     <button id="execute" class="button">Execute</button>
+    <button id="clear" class="button">Clear</button>
     <button id='savedb' class="button">Save the db</button>
-    <button id="loadWorld" class="button">Load World Dataset</button>
     <label class="button">Load an SQLite database file: <input type='file' id='dbfile'></label>
+    <button id="loadWorld" class="button">Load World Dataset</button>
+    <button id="loadImdb" class="button">Load Imdb 2018 Popular Movies Dataset</button>
+</div>
 
     <div id="error" class="error status"></div>
 
-    <pre id="output">Results will be displayed here</pre>
-  </main>
+    <div id="output">
+    Results will be displayed here
+    </div>
 
   <script src="./sql.min.js"></script>
 
