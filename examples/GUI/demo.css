@@ -1,15 +1,16 @@
 html {
-	background:#ddd;
-	margin:auto;
+	background:#fff;
+	/*padding: 10px 20px;*/
+	margin: 10px;
 }
 
 body{
-	background: white;
+/*	background: white;*/
 /*	background: linear-gradient(#aaa 0, #ddd 10px, #fff 55px);*/
 /*	border: 1px solid black;*/
-	padding: 10px 20px;
+/*	padding: 10px 20px;*/
 /*	box-shadow: 5px 0px 30px #000;*/
-	border-radius: 8px;
+/*	border-radius: 8px;*/
 }
 
 h1 {
@@ -63,7 +64,7 @@ h1 {
 }
 
 #output {
-	overflow: auto;
+/*	overflow: auto;*/
 }
 
 table {
@@ -76,6 +77,10 @@ table {
 
 th, td {
 	border:1px solid #777;
+}
+
+#output table {
+	white-space: pre;
 }
 
 footer {
