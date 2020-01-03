@@ -5,6 +5,9 @@ var errorElm = document.getElementById('error');
 var commandsElm = document.getElementById('commands');
 var dbFileElm = document.getElementById('dbfile');
 var savedbElm = document.getElementById('savedb');
+var moreBtn = document.getElementById('more');
+var lessBtn = document.getElementById('less');
+var moreButtons = document.getElementById('moreButtons');
 
 // Start the worker in which sql.js will run
 var worker = new Worker("dist/worker.sql-wasm-debug.js");
@@ -158,6 +161,17 @@ function savedb() {
 	worker.postMessage({ action: 'export' });
 }
 savedbElm.addEventListener("click", savedb, true);
+
+// More and less buttons
+moreButtons.style.display = 'none';
+moreBtn.addEventListener('click', () => {
+	moreButtons.style.display = 'inline';
+	moreBtn.style.display = 'none';
+});
+lessBtn.addEventListener('click', () => {
+	moreButtons.style.display = 'none';
+	moreBtn.style.display = 'inline-block';
+});
 
 function fetchdb(file)
 {
